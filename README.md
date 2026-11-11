@@ -1,24 +1,35 @@
-docker-jnethack-server
-======================
+# JNetHack SSH サーバー
 
-Dockerfile for Public JNetHack server
+JNetHack 3.4.3-0.11（UTF-8対応）を `dgamelaunch` 経由で提供する Linux コンテナです。[matsuu/docker-jnethack-server](https://github.com/matsuu/docker-jnethack-server/tree/3c5cf266657cfd277d95e9fc5df47343fef5c51a) の Telnet を OpenSSH に置き換えています。
 
-## Howto
+## ビルドと起動
 
-    docker run --detach --name=jnh --publish=23:23 matsuu/jnethack-server
+Linux コンテナを使用できる Docker で、このディレクトリから実行します。以下は PowerShell の例です。
 
-## Build
+```powershell
+docker build -t jnethack-server:ssh .
+docker run -d --name jnethack --publish 127.0.0.1:2222:22 `
+  --volume jnethack-saves:/opt/nethack/nethack.alt.org/nh343/var `
+  --volume jnethack-players:/opt/nethack/nethack.alt.org/dgldir `
+  --volume jnethack-ssh-host:/var/lib/jnethack/ssh `
+  jnethack-server:ssh
+```
 
-    docker build -t jnethack-server .
+```powershell
+ssh -p 2222 nethack@localhost
+```
 
-## References
+プレイヤーによる SSH 鍵登録や SSH パスワード入力は不要です。初回接続時は、次のコマンドで表示されるサーバーのホスト鍵指紋とクライアントの表示を照合してください。
 
-- [Public JNetHack Server at nethack.matsuu.net](https://matsuu.net/nethack/)
-- [matsuu/docker-jnethack](https://github.com/matsuu/docker-jnethack)
-- [NetHack 3.4.3: Home Page](http://www.nethack.org/)
-- [JNetHack Home Page](http://www.jnethack.org/)
-- [JNetHack Project](http://jnethack.sourceforge.jp/)
-- [Compiling - Wikihack](http://nethack.wikia.com/wiki/Compiling)
-- [jNetHack UTF-8対応 を CentOS 6.3 にインストール](http://qiita.com/KurokoSin/items/bbbfb4b4f9ee645418f1)
-- [paxed/dgamelaunch](https://github.com/paxed/dgamelaunch)
-- [HowTo setup dgamelaunch](http://nethackwiki.com/wiki/User:Paxed/HowTo_setup_dgamelaunch)
+```powershell
+docker exec jnethack ssh-keygen -lf /var/lib/jnethack/ssh/ssh_host_ed25519_key.pub
+```
+
+- `w` で進行中のゲームを観戦できます。
+- 初回は `r` でゲームアカウントを登録します。プレイするときは `l` でログインし、`p` で開始・再開できます。
+
+## 公開とデータ保存
+
+外部から接続できるようにする場合は、`--publish 127.0.0.1:2222:22` を `--publish 2222:22` に変更し、接続先のホスト名を案内します。公開する SSH ポートは TCP 2222 です。コンテナ内の SSH は `nethack` 専用で、対話セッションをゲームメニューに限定し、ポート転送を無効にしています。
+
+`jnethack-saves` にセーブやスコア、`jnethack-players` にゲームアカウントやプレイ記録、`jnethack-ssh-host` にサーバーのホスト鍵を保存します。コンテナを作り直すときは同じボリュームを指定してください。

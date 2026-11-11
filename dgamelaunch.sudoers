@@ -1,0 +1,2 @@
+Defaults:nethack !use_pty, env_keep += "LANG TERM"
+nethack ALL=(root) NOPASSWD: /usr/local/libexec/dgamelaunch ""

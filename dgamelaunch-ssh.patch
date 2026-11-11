@@ -1,0 +1,11 @@
+--- a/dgamelaunch.c
++++ b/dgamelaunch.c
+@@ -1515,7 +1515,4 @@
+       mvprintw (5, 1,
+-                "Please enter a%s password. Remember that this is sent over the net",
++                "Please enter a%s password.",
+                 loggedin ? " new" : "");
+-      mvaddstr (6, 1,
+-                "in plaintext, so make it something new and expect it to be relatively");
+-      mvaddstr (7, 1, "insecure.");
+       mvprintw (8, 1,

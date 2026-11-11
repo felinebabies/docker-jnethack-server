@@ -1,0 +1,17 @@
+AllowUsers nethack
+HostKey /var/lib/jnethack/ssh/ssh_host_ed25519_key
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication no
+UsePAM no
+PrintMotd no
+PrintLastLog no
+PermitUserRC no
+DisableForwarding yes
+PermitTunnel no
+ForceCommand /usr/local/libexec/jnethack-session
+
+Match User nethack
+    PasswordAuthentication yes
+    PermitEmptyPasswords yes
